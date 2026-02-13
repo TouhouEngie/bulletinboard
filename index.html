@@ -8,7 +8,10 @@
         <p id="message"></p>
 
         <script type="module">
+        
+        
         // firebase
+        var secrets = JSON.parse(fetch("./secret.json"));
         var email;
         var password;
 
@@ -17,12 +20,12 @@
 
         // https://firebase.google.com/docs/web/setup#available-libraries
         const firebaseConfig = {
-            apiKey: "AIzaSyA8bgyoLtWiHQqnziio4if2aSTJ1k-y0qc",
-            authDomain: "bulletinboard-f0479.firebaseapp.com",
-            projectId: "bulletinboard-f0479",
-            storageBucket: "bulletinboard-f0479.firebasestorage.app",
-            messagingSenderId: "614006899593",
-            appId: "1:614006899593:web:069a75c6579ccb60d55758"
+            apiKey: secrets.apiKey,
+            authDomain: secrets.authDomain,
+            projectId: secrets.projectId,
+            storageBucket: secrets.storageBucket,
+            messagingSenderId: secrets.messagingSenderId,
+            appId: secrets.appId
         };
         const app = initializeApp(firebaseConfig);
 
