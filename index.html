@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <button id="signInWithElgoog">Sign in with Google</button>
+        <p id="message"></p>
+
+        <script type="module">
+        // firebase
+        var email;
+        var password;
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, signInAnonymously, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8bgyoLtWiHQqnziio4if2aSTJ1k-y0qc",
+            authDomain: "bulletinboard-f0479.firebaseapp.com",
+            projectId: "bulletinboard-f0479",
+            storageBucket: "bulletinboard-f0479.firebasestorage.app",
+            messagingSenderId: "614006899593",
+            appId: "1:614006899593:web:069a75c6579ccb60d55758"
+        };
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth();
+        const elgoog = new GoogleAuthProvider();
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+            })
+            .catch ((error) => {
+                const errorCode = error.code;
+                const message = error.message;
+            });
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+            })
+            .catch ((error) => {
+                const errorCode = error.code;
+                const message = error.message;
+            });
+        signOut(auth).then(() => {
+            // succ
+        }).catch((error) => {
+            // fucc
+        });
+
+        signInAnonymously(auth)
+            .then(() => {
+                document.getElementById("message").innerHTML = "Signed in anonymously";
+            }).catch((error) => {
+                const errorCode = error.code;
+                const message = error.message;
+            });
+
+        
+        // start actual code
+        // this apparently auto-signs-in anonymously /shrug
+        document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then(() => { window.location.replace("/"); }); });
+
+        </script>
+    </body>
+</html>
