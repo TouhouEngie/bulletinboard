@@ -50,6 +50,7 @@ function postIt() {
 
     if (!(currentUser)) {
         alert.innerText = "Please sign in first.";
+        document.getElementById("signInOptions").classList.remove("hidden");
         return;
     }
     if (message.value.length < 4) {
@@ -105,6 +106,5 @@ form.addEventListener("submit", (e) => {
 });
 const message = document.getElementById("message");
 loadPosts();
-isLoggedIn();
 auth.onAuthStateChanged(() => {isLoggedIn()});
 
