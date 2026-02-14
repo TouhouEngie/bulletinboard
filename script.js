@@ -105,5 +105,6 @@ form.addEventListener("submit", (e) => {
 });
 const message = document.getElementById("message");
 loadPosts();
+isLoggedIn();
 auth.onAuthStateChanged(() => {isLoggedIn()});
 
