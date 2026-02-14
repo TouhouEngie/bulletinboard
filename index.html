@@ -1,71 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="icon" type="image/png" href="https://fileserver.touhouengie.com/drive/webpage_data/Images/image.png" />
 
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+        <!-- this is all SEO and social media optimizations -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Drop a quick message for Touhou Engie here..." />
+        <meta content="Touhou Engie" property="og:title" />
+        <meta property="og:type" content="website" />
+        <meta content="https://fileserver.touhouengie.com/drive/webpage-data/Images/image.png" property="og:image" />
+        <meta property="og:url" content="https://chatbook.touhouengie.com" />
+        
+        <title>Touhou Engie Chatbook</title>
     </head>
     <body>
-        <button id="signInWithElgoog">Sign in with Google</button>
-        <p id="message"></p>
-
-        <script type="module">
-        
-        
-        // firebase
-        var secrets = JSON.parse(fetch("./secret.json"));
-        var email;
-        var password;
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getAuth, signInAnonymously, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-
-        // https://firebase.google.com/docs/web/setup#available-libraries
-        const firebaseConfig = {
-            apiKey: secrets.apiKey,
-            authDomain: secrets.authDomain,
-            projectId: secrets.projectId,
-            storageBucket: secrets.storageBucket,
-            messagingSenderId: secrets.messagingSenderId,
-            appId: secrets.appId
-        };
-        const app = initializeApp(firebaseConfig);
-
-        const auth = getAuth();
-        const elgoog = new GoogleAuthProvider();
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-            })
-            .catch ((error) => {
-                const errorCode = error.code;
-                const message = error.message;
-            });
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-            })
-            .catch ((error) => {
-                const errorCode = error.code;
-                const message = error.message;
-            });
-        signOut(auth).then(() => {
-            // succ
-        }).catch((error) => {
-            // fucc
-        });
-
-        signInAnonymously(auth)
-            .then(() => {
-                document.getElementById("message").innerHTML = "Signed in anonymously";
-            }).catch((error) => {
-                const errorCode = error.code;
-                const message = error.message;
-            });
-
-        
-        // start actual code
-        // this apparently auto-signs-in anonymously /shrug
-        document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then(() => { window.location.replace("/"); }); });
-
-        </script>
+        <div class="bg-gray-800 w-full h-screen text-white">
+            <button id="signInWithElgoog" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in with Google</button>
+            <p id="alert"></p>
+            <form id="form" class="">
+                <textarea id="message" class="border-white bg-black rounded-md placeholder:text-gray-500 w-1/2 h-25 resize-none" placeholder="Enter your message here..."></textarea><br>
+                <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md">Post</button>
+            </form>
+            <div id="postboard" class="grid grid-cols-3 mt-1/6"></div>
+        </div>
+        <script type="module" src="script.js"></script>
     </body>
 </html>
