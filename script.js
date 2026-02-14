@@ -1,6 +1,3 @@
-// TODO: Store this in PHP or something idfk
-import { firebaseConfig } from './secrets.js';
-
 // firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
