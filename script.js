@@ -42,26 +42,43 @@ function createAccount(email, password) {
         });
 }
 
-function signTheHeckOut() {
-    signOut(auth).then(() => {
-    // succ
-    }).catch((error) => {
-        // fucc
-    });
-}
-
 // start actual code
 
 function postIt() {
+    const currentUser = auth.currentUser;
+    const alert = document.getElementById("alert");
+
+    if (!(currentUser)) {
+        alert.innerText = "Please sign in first.";
+        return;
+    }
+    if (message.value.length < 4) {
+        alert.innerText = "Message too short."
+        return;
+    }
     addDoc(collection(database, "posts"), {
         message: message.value,
-        author: auth.currentUser.displayName,
+        author: currentUser.displayName,
     });
     document.getElementById("alert").innerHTML = "Message sent!";
     loadPosts();
 }
 
+function isLoggedIn() {
+    if (auth.currentUser) {
+        document.getElementById("signOut").classList.remove("hidden");
+        document.getElementById("signInOptions").classList.add("hidden");
+    } else {
+        document.getElementById("signOut").classList.add("hidden");
+        document.getElementById("signInOptions").classList.remove("hidden");
+    }
+}
+
+
 document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then(() => { window.location.replace("/"); }); });
+document.getElementById("signOut").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
+// todo: error handling
+
 
 async function loadPosts() {
     const posts = await getDocs(collection(database, "posts"));
@@ -84,13 +101,9 @@ const form = document.getElementById("form");
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     // or just f#cking hide the form before user login?
-    const currentUser = auth.currentUser;
-    if (!(currentUser)) {
-        document.getElementById("alert").innerText = "Please sign in first.";
-    } else {
-        postIt();
-    }
+    postIt();
 });
 const message = document.getElementById("message");
 loadPosts();
+auth.onAuthStateChanged(() => {isLoggedIn()});
 

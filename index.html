@@ -16,16 +16,21 @@
         
         <title>Touhou Engie Chatbook</title>
     </head>
-    <body>
-        <div class="bg-gray-800 w-full h-screen text-white">
-            <button id="signInWithElgoog" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in with Google</button>
-            <p id="alert"></p>
-            <form id="form" class="">
-                <textarea id="message" class="border-white bg-black rounded-md placeholder:text-gray-500 w-1/2 h-25 resize-none" placeholder="Enter your message here..."></textarea><br>
-                <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md">Post</button>
-            </form>
-            <div id="postboard" class="grid grid-cols-3 mt-1/6"></div>
+    <body class="bg-gray-800 text-white">
+        <div class="m-3">
+            <div id="signInOptions" class="hidden">
+                <button id="signInWithElgoog" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in with Google</button>
+                <button id="signInNormally" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in</button>
+            </div>
+            <button id="signOut" class="border bg-red-800 px-4 py-1 rounded-md hidden">Sign out</button>
         </div>
+        <div id="postboard" class="grid grid-cols-3 gap-3 m-3"></div>
+        
+        <form id="form" class="bottom-2 fixed w-full m-3">
+            <p id="alert"></p>
+            <textarea id="message" class="border-white bg-black rounded-md placeholder:text-gray-500 w-1/2 h-25 resize-none" placeholder="Enter your message here..."></textarea><br>
+            <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md ">Post</button>
+        </form>
         <script type="module" src="script.js"></script>
     </body>
 </html>
