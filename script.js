@@ -7,6 +7,15 @@ import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWith
 import { getFirestore, addDoc, doc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
+// github stfu, this is already restricted on the server side lmao
+const firebaseConfig = {
+    "apiKey": "AIzaSyA8bgyoLtWiHQqnziio4if2aSTJ1k-y0qc",
+    "authDomain": "bulletinboard-f0479.firebaseapp.com",
+    "projectId": "bulletinboard-f0479",
+    "storageBucket": "bulletinboard-f0479.firebasestorage.app",
+    "messagingSenderId": "614006899593",
+    "appId": "1:614006899593:web:04c13c5f3505ebc0d55758"
+};
 
 const app = initializeApp(firebaseConfig);
 
