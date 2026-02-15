@@ -1,4 +1,5 @@
 // firebase
+// REMINDER: If you are using some random ass function that you haven't created chances are you're going to have to import it from here
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, getAdditionalUserInfo, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 import { query, getFirestore, addDoc, where, doc, collection, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
