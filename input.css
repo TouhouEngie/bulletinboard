@@ -1,0 +1,3 @@
+.pointer { cursor: url('https://fileserver.touhouengie.com/drive/webpage_data/cursors/1/select.cur'), pointer; }
+* { cursor: url('https://fileserver.touhouengie.com/drive/webpage_data/cursors/1/normal.cur'), default; }
+.text { cursor: url('https://fileserver.touhouengie.com/drive/webpage_data/cursors/1/text_sel.cur'), text; }
