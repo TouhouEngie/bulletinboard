@@ -1,7 +1,7 @@
 // firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { getFirestore, addDoc, doc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { getAuth, getAdditionalUserInfo, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import { query, getFirestore, addDoc, where, doc, collection, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 // github stfu, this is already restricted on the server side lmao
@@ -72,23 +72,23 @@ function isLoggedIn() {
     if (auth.currentUser) {
         document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
+        document.getElementById("settings").addEventListener("click", () => { document.getElementById("settingswindow").classList.remove("hidden") });
+        document.getElementById("accountsettings").addEventListener("submit", (e) => {
+            e.preventDefault();
+            accountOptions();
+        });
     } else {
         document.getElementById("accountOptions").classList.add("hidden");
         document.getElementById("signInOptions").classList.remove("hidden");
     }
 }
 
-
-document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then(() => { window.location.replace("/"); }); });
-document.getElementById("accountOptions").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
-// todo: error handling
-
-
 async function loadPosts() {
     const posts = await getDocs(collection(database, "posts"));
     const timezone = new Date;
     document.getElementById("postboard").innerHTML = "";
     posts.forEach((doc) => {
+        // TODO: "owner" tag for me
         const newPost = document.createElement("div");
         newPost.classList.add("bg-sky-500", "border", "rounded-md", "p-3")
         const name = document.createElement("p");
@@ -107,6 +107,43 @@ async function loadPosts() {
         document.getElementById("postboard").appendChild(newPost);
     });
 }
+
+async function accountOptions() {
+    const oldName = auth.currentUser.displayName;
+    const userName = document.getElementById("username").value;
+    await updateProfile(auth.currentUser, {
+        displayName: userName
+    });
+    await updateAllDocuments(oldName, userName);
+    window.location.replace("/");
+}
+
+async function updateAllDocuments(name, news) {
+    const resources = await getDocs(query(collection(database, "posts"), where("author", "==", name)));
+    const batch = writeBatch(database);
+    resources.forEach((doc) => {
+        batch.update(doc.ref, {
+            author: news
+        });
+    });
+    await batch.commit();
+}
+
+document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then((result) => { 
+    if (getAdditionalUserInfo(result).isNewUser) {
+        document.getElementById("usernamewindow").classList.remove("hidden");
+        document.getElementById("firstusername").value = auth.currentUser.displayName || "";
+        document.getElementById("newusername").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await updateProfile(auth.currentUser, {
+                displayName: document.getElementById("firstusername").value
+            });
+            window.location.replace("/"); 
+        });
+    }
+}); });
+document.getElementById("signOut").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
+// todo: error handling
 
 const form = document.getElementById("form");
 form.addEventListener("submit", (e) => {
