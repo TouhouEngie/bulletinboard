@@ -47,6 +47,7 @@ function createAccount(email, password) {
 function postIt() {
     const currentUser = auth.currentUser;
     const alert = document.getElementById("alert");
+    const date = new Date();
 
     if (!(currentUser)) {
         alert.innerText = "Please sign in first.";
@@ -60,39 +61,48 @@ function postIt() {
     addDoc(collection(database, "posts"), {
         message: message.value,
         author: currentUser.displayName,
+        date: date.getTime(),
     });
     document.getElementById("alert").innerHTML = "Message sent!";
+    message.value = "";
     loadPosts();
 }
 
 function isLoggedIn() {
     if (auth.currentUser) {
-        document.getElementById("signOut").classList.remove("hidden");
+        document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
     } else {
-        document.getElementById("signOut").classList.add("hidden");
+        document.getElementById("accountOptions").classList.add("hidden");
         document.getElementById("signInOptions").classList.remove("hidden");
     }
 }
 
 
 document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then(() => { window.location.replace("/"); }); });
-document.getElementById("signOut").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
+document.getElementById("accountOptions").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
 // todo: error handling
 
 
 async function loadPosts() {
     const posts = await getDocs(collection(database, "posts"));
+    const timezone = new Date;
     document.getElementById("postboard").innerHTML = "";
     posts.forEach((doc) => {
         const newPost = document.createElement("div");
         newPost.classList.add("bg-sky-500", "border", "rounded-md", "p-3")
-        const name = document.createElement("p")
+        const name = document.createElement("p");
         name.innerText = doc.data().author;
-        name.classList.add("text-sm")
-        const message = document.createElement("p")
+        name.classList.add("text-sm");
+        const date = document.createElement("p");
+        // todo: test if this works across time zones
+        var dateText = new Date(doc.data().date - timezone.getTimezoneOffset() * 60 * 1000);
+        date.innerText = `${dateText.getUTCMonth() + 1}/${dateText.getUTCDate()}/${dateText.getUTCFullYear()}`;
+        date.classList.add("text-sm");
+        const message = document.createElement("p");
         message.innerText = doc.data().message;
         newPost.appendChild(name);
+        newPost.appendChild(date);
         newPost.appendChild(message);
         document.getElementById("postboard").appendChild(newPost);
     });

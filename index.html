@@ -22,9 +22,13 @@
                 <button id="signInWithElgoog" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in with Google</button>
                 <button id="signInNormally" class="border bg-sky-500 px-6 py-1 rounded-md">Sign in</button>
             </div>
-            <button id="signOut" class="border bg-red-800 px-4 py-1 rounded-md hidden">Sign out</button>
+            <div id="accountOptions" class="hidden">
+                <button id="settings" class="border bg-sky-500 px-6 py-1 rounded-md">Account settings</button>
+                <button id="signOut" class="border bg-red-800 px-4 py-1 rounded-md">Sign out</button>
+            </div>
+            
         </div>
-        <div id="postboard" class="grid grid-cols-3 gap-3 m-3"></div>
+        <div id="postboard" class="grid grid-cols-1 sm:grid-cols-3 gap-3 m-3"></div>
         
         <form id="form" class="bottom-2 fixed w-full m-3">
             <p id="alert"></p>
