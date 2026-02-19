@@ -73,7 +73,7 @@ function isLoggedIn() {
     if (auth.currentUser) {
         document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
-        document.getElementById("settings").addEventListener("click", () => { document.getElementById("settingswindow").classList.remove("hidden") });
+        document.getElementById("settings").addEventListener("click", () => { document.getElementById("settingsdialog").showModal() });
         document.getElementById("accountsettings").addEventListener("submit", (e) => {
             e.preventDefault();
             accountOptions();
@@ -132,7 +132,7 @@ async function updateAllDocuments(name, news) {
 
 document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then((result) => { 
     if (getAdditionalUserInfo(result).isNewUser) {
-        document.getElementById("usernamewindow").classList.remove("hidden");
+        document.getElementById("newusernamedialog").showModal();
         document.getElementById("firstusername").value = auth.currentUser.displayName || "";
         document.getElementById("newusername").addEventListener("submit", async (e) => {
             e.preventDefault();
