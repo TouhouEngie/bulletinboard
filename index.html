@@ -32,32 +32,43 @@
         <div id="postboard" class="grid grid-cols-2 sm:grid-cols-3 gap-3 m-3 overflow-y-auto"></div>
         
         <!-- how make it so that it doesn't go in front of posts? -->
-        <form id="form" class="bottom-2 w-full m-3">
+        <form id="postform" class="bottom-2 w-full m-3">
             <p id="alert"></p>
             <textarea id="message" class="text border-white bg-black rounded-md placeholder:text-gray-500 w-1/2 h-25 resize-none" placeholder="Enter your message here..."></textarea><br>
             <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">Post</button>
         </form>
 
-        <dialog id="settingsdialog">
-            <div class="absolute w-80 h-75 border bg-transparent rounded-md translate-x-1/2 text-white" id="settingswindow">
-                <p class="bg-yellow-800">Account settings</p>
-                    <form id="accountsettings">
-                        <input type="text" id="username" class="border-white bg-black rounded-md placeholder:text-gray-500" required/>
-                        <input type="email" id="email" class="border-white bg-black rounded-md placeholder:text-gray-500" disabled/>
-                        <input type="password" id="password" class="border-white bg-black rounded-md placeholder:text-gray-500" disabled/>
-                        <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">Update</button>
-                    </form>
-            </div>
+        <dialog id="settingsdialog" class="text-white bg-yellow-800 backdrop-blur-md p-2 border-white absolute sm:translate-x-1/2 translate-y-1/2 rounded-md">
+            <p>Account settings</p>
+            <p class="text-sm hidden sm:block">If you have a supporting keyboard, press ESC to cancel.</p>
+            <form id="accountsettings">
+                <div class="chunkofsettings">
+                    <label>Username:
+                        <input type="text" id="username" class="border-white bg-black rounded-md placeholder:text-silver-500 p-1 w-full" placeholder="Username" required/>
+                    </label>
+                </div>
+                <div class="chunkofsettings">
+                    <label>E-mail:
+                        <input type="email" id="email" class="border-white bg-black rounded-md placeholder:text-silver-500 p-1 w-full" placeholder="E-mail" disabled/>
+                    </label>
+                </div>
+                <div class="chunkofsettings">
+                    <label>Password:
+                        <input type="password" id="password" class="border-white bg-black rounded-md placeholder:text-silver-500 p-1 w-full" placeholder="Password" disabled/>
+                    </label>
+                </div>
+                <div class="abloodybutton">
+                    <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">Update</button>
+                </div>
+            </form>
         </dialog>
 
-        <dialog id="newusernamedialog">
-            <div class="absolute w-80 h-75 border bg-transparent rounded-md translate-x-1/2 text-white" id="usernamewindow">
-                <p class="bg-yellow-800">Enter a username</p>
-                <form id="newusername">
-                    <input type="text" id="firstusername" class="border-white bg-black rounded-md placeholder:text-gray-500" required/>
-                    <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">OK</button>
-                </form>
-            </div>
+        <dialog id="newusernamedialog" closedby="none" class="text-white bg-yellow-800 sm:translate-x-1/2 translate-y-1/2 rounded-md">
+            <p class="">Enter a username</p>
+            <form id="newusername">
+                <input type="text" id="firstusername" class="border-white bg-black rounded-md placeholder:text-silver-500" required/>
+                <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">OK</button>
+            </form>
         </dialog>
 
         <script type="module" src="script.js"></script>

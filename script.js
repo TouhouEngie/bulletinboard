@@ -44,6 +44,7 @@ function createAccount(email, password) {
 }
 
 // start actual code
+// todo: sort by date, not ID
 
 function postIt() {
     const currentUser = auth.currentUser;
@@ -73,7 +74,10 @@ function isLoggedIn() {
     if (auth.currentUser) {
         document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
-        document.getElementById("settings").addEventListener("click", () => { document.getElementById("settingsdialog").showModal() });
+        document.getElementById("settings").addEventListener("click", () => { 
+            document.getElementById("settingsdialog").showModal();
+            document.getElementById("username").value = auth.currentUser.displayName || "";
+        });
         document.getElementById("accountsettings").addEventListener("submit", (e) => {
             e.preventDefault();
             accountOptions();
@@ -110,8 +114,19 @@ async function loadPosts() {
 }
 
 async function accountOptions() {
+    // may not be the best optimized to scale but eh
     const oldName = auth.currentUser.displayName;
     const userName = document.getElementById("username").value;
+    if (oldName === userName) {
+        return;
+    }
+    const listOfUsernames = await getDocs(collection(database, "usernames"));
+    listOfUsernames.forEach((namer) => {
+        if (namer.data().username === userName) {
+            console.log("Duplicate username detected.");
+            return;
+        }
+    });
     await updateProfile(auth.currentUser, {
         displayName: userName
     });
@@ -146,7 +161,7 @@ document.getElementById("signInWithElgoog").addEventListener("click", () => { si
 document.getElementById("signOut").addEventListener("click", () => { signOut(auth).then(() => { window.location.replace("/") }); });
 // todo: error handling
 
-const form = document.getElementById("form");
+const form = document.getElementById("postform");
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     // or just f#cking hide the form before user login?
