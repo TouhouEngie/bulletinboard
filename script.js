@@ -2,7 +2,7 @@
 // REMINDER: If you are using some random ass function that you haven't created chances are you're going to have to import it from here
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, getAdditionalUserInfo, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { query, getFirestore, addDoc, where, doc, collection, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { query, getFirestore, addDoc, where, doc, collection, getDoc, getDocs, updateDoc, documentId } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 // github stfu, this is already restricted on the server side lmao
@@ -16,7 +16,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
+var userId;
+var currentUser;
+var currentUsername;
 const auth = getAuth();
 const database = getFirestore();
 const elgoog = new GoogleAuthProvider();
@@ -62,7 +64,7 @@ function postIt() {
     }
     addDoc(collection(database, "posts"), {
         message: message.value,
-        author: currentUser.displayName,
+        author: currentUser.uid,
         date: date.getTime(),
     });
     document.getElementById("alert").innerHTML = "Message sent!";
@@ -70,79 +72,94 @@ function postIt() {
     loadPosts();
 }
 
-function isLoggedIn() {
-    if (auth.currentUser) {
+async function isLoggedIn() {
+    if (currentUser) {
+        updateUsernameReference();
+
         document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
         document.getElementById("settings").addEventListener("click", () => { 
             document.getElementById("settingsdialog").showModal();
-            document.getElementById("username").value = auth.currentUser.displayName || "";
+            document.getElementById("username").value = currentUsername || "";
         });
         document.getElementById("accountsettings").addEventListener("submit", (e) => {
             e.preventDefault();
             accountOptions();
         });
+        userId = await currentUser.uid;
     } else {
         document.getElementById("accountOptions").classList.add("hidden");
         document.getElementById("signInOptions").classList.remove("hidden");
     }
 }
 
+async function updateUsernameReference() {
+    const docRef = doc(database, "usernames", userId);
+    const usernameDoc = await getDoc(docRef);
+    currentUsername = usernameDoc.data().username;
+}
+
 async function loadPosts() {
     const posts = await getDocs(collection(database, "posts"));
-    const timezone = new Date;
-    document.getElementById("postboard").innerHTML = "";
-    posts.forEach((doc) => {
+    const board = document.getElementById("postboard");
+    board.innerHTML = "";
+    
+    for (const doc of posts.docs) {
         // TODO: "owner" tag for me
         const newPost = document.createElement("div");
-        newPost.classList.add("bg-sky-500", "border", "rounded-md", "p-3")
+        newPost.classList.add("bg-sky-500", "border", "rounded-md", "p-3");
+
         const name = document.createElement("p");
-        name.innerText = doc.data().author;
+        name.innerText = await getUsernameById(doc.data().author);
         name.classList.add("text-sm");
+
         const date = document.createElement("p");
-        // todo: test if this works across time zones
-        var dateText = new Date(doc.data().date - timezone.getTimezoneOffset() * 60 * 1000);
-        date.innerText = `${dateText.getUTCMonth() + 1}/${dateText.getUTCDate()}/${dateText.getUTCFullYear()}`;
+        var dateText = new Date(doc.data().date);
+        date.innerText = `${dateText.getMonth() + 1}/${dateText.getDate()}/${dateText.getFullYear()}`;
         date.classList.add("text-sm");
+
         const message = document.createElement("p");
         message.innerText = doc.data().message;
+
         newPost.appendChild(name);
         newPost.appendChild(date);
         newPost.appendChild(message);
-        document.getElementById("postboard").appendChild(newPost);
-    });
+        board.appendChild(newPost);
+    }
+    
+    // honestly just get the full package beforehand, fix soon
+    async function getUsernameById(author) {
+        const usernameRef = doc(database, "usernames", author);
+        const usernames = await getDoc(usernameRef);
+        return usernames.data().username;
+    }
 }
 
 async function accountOptions() {
-    // may not be the best optimized to scale but eh
-    const oldName = auth.currentUser.displayName;
+    updateUsernameReference();
+
     const userName = document.getElementById("username").value;
-    if (oldName === userName) {
+    if (currentUsername === userName || userName === "Touhou Engie") {
         return;
     }
-    const listOfUsernames = await getDocs(collection(database, "usernames"));
-    listOfUsernames.forEach((namer) => {
-        if (namer.data().username === userName) {
-            console.log("Duplicate username detected.");
-            return;
-        }
+    if (await checkForUsernameMatch(userName)) {
+        return; 
+    };
+    const docRef = doc(database, "usernames", userId);
+    await updateDoc(docRef, {
+        username: userName
     });
-    await updateProfile(auth.currentUser, {
-        displayName: userName
-    });
-    await updateAllDocuments(oldName, userName);
     window.location.replace("/");
 }
 
-async function updateAllDocuments(name, news) {
-    const resources = await getDocs(query(collection(database, "posts"), where("author", "==", name)));
-    const batch = writeBatch(database);
-    resources.forEach((doc) => {
-        batch.update(doc.ref, {
-            author: news
-        });
+async function checkForUsernameMatch(name) {
+    const usernames = await getDocs(collection(database, "usernames"));
+    usernames.forEach((doc) => {
+        if (doc.data().username === name) {
+            return true;
+        }
     });
-    await batch.commit();
+    return false;
 }
 
 document.getElementById("signInWithElgoog").addEventListener("click", () => { signInWithPopup(auth, elgoog).then((result) => { 
@@ -151,8 +168,8 @@ document.getElementById("signInWithElgoog").addEventListener("click", () => { si
         document.getElementById("firstusername").value = auth.currentUser.displayName || "";
         document.getElementById("newusername").addEventListener("submit", async (e) => {
             e.preventDefault();
-            await updateProfile(auth.currentUser, {
-                displayName: document.getElementById("firstusername").value
+            await updateDoc(doc(database, "usernames", userId), {
+                username: document.getElementById("firstusername").value
             });
             window.location.replace("/"); 
         });
@@ -169,5 +186,8 @@ form.addEventListener("submit", (e) => {
 });
 const message = document.getElementById("message");
 loadPosts();
-auth.onAuthStateChanged(() => {isLoggedIn()});
+auth.onAuthStateChanged((user) => {
+    currentUser = user;
+    isLoggedIn();
+});
 
