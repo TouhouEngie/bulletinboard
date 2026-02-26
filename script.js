@@ -168,7 +168,7 @@ document.getElementById("signInWithElgoog").addEventListener("click", () => { si
         document.getElementById("firstusername").value = auth.currentUser.displayName || "";
         document.getElementById("newusername").addEventListener("submit", async (e) => {
             e.preventDefault();
-            await updateDoc(doc(database, "usernames", userId), {
+            await addDoc(doc(database, "usernames", userId), {
                 username: document.getElementById("firstusername").value
             });
             window.location.replace("/"); 
