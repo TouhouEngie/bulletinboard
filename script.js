@@ -2,7 +2,7 @@
 // REMINDER: If you are using some random ass function that you haven't created chances are you're going to have to import it from here
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 import { getAuth, getAdditionalUserInfo, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { query, getFirestore, addDoc, where, doc, collection, getDoc, getDocs, updateDoc, documentId } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import { query, getFirestore, addDoc, where, doc, collection, getDoc, getDocs, updateDoc, documentId, setDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 // github stfu, this is already restricted on the server side lmao
@@ -168,7 +168,7 @@ document.getElementById("signInWithElgoog").addEventListener("click", () => { si
         document.getElementById("firstusername").value = auth.currentUser.displayName || "";
         document.getElementById("newusername").addEventListener("submit", async (e) => {
             e.preventDefault();
-            await addDoc(doc(database, "usernames", userId), {
+            await setDoc(doc(database, "usernames", userId), {
                 username: document.getElementById("firstusername").value
             });
             window.location.replace("/"); 
