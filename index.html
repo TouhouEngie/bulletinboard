@@ -24,6 +24,7 @@
                 <button id="signInNormally" class="border bg-sky-500 px-6 py-1 rounded-md pointer">Sign in</button>
             </div>
             <div id="accountOptions" class="hidden">
+                <p id="welcome"></p>
                 <button id="settings" class="border bg-sky-500 px-6 py-1 rounded-md pointer">Account settings</button>
                 <button id="signOut" class="border bg-red-800 px-4 py-1 rounded-md pointer">Sign out</button>
             </div>
@@ -64,11 +65,27 @@
             </form>
         </dialog>
 
-        <dialog id="newusernamedialog" closedby="none" class="text-white bg-yellow-800 sm:translate-x-1/2 translate-y-1/2 rounded-md">
+        <dialog id="newusernamedialog" closedby="none" class="text-white bg-yellow-800 sm:translate-x-1/2 translate-y-1/2 rounded-md p-2">
             <p class="">Enter a username</p>
             <form id="newusername">
-                <input type="text" id="firstusername" class="border-white bg-black rounded-md placeholder:text-silver-500" required/>
+                <input type="text" id="firstusername" class="border-white bg-black rounded-md placeholder:text-silver-500 text" placeholder="username123" required/>
                 <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">OK</button>
+            </form>
+        </dialog>
+
+        <dialog id="signindialog" class="text-white bg-yellow-800 sm:translate-x-1/2 translate-y-1/2 rounded-md p-2">
+            <p class="">Sign in</p>
+            <form id="signin">
+                <div class="pb-1">
+                    <input type="email" id="email" class="border-white bg-black rounded-md placeholder:text-silver-500 text p-1" placeholder="E-mail" required/>
+                </div>
+                <div class="pb-1">
+                    <input type="password" id="pswd" class="border-white bg-black rounded-md placeholder:text-silver-500 text p-1" placeholder="Password" required/>
+                </div>
+                <div>
+                    <button type="submit" class="px-5 py-1 border-white bg-sky-500 rounded-md pointer">Sign in</button>
+                    <button onclick="closeThatBozo('signindialog')" class="px-5 py-1 border-white bg-red-600 rounded-md pointer">Cancel</button>
+                </div>
             </form>
         </dialog>
 

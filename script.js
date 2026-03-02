@@ -74,8 +74,10 @@ function postIt() {
 
 async function isLoggedIn() {
     if (currentUser) {
+        userId = await currentUser.uid;
         updateUsernameReference();
 
+        document.getElementById("welcome").innerText = `Welcome ${currentUsername}`
         document.getElementById("accountOptions").classList.remove("hidden");
         document.getElementById("signInOptions").classList.add("hidden");
         document.getElementById("settings").addEventListener("click", () => { 
@@ -86,10 +88,18 @@ async function isLoggedIn() {
             e.preventDefault();
             accountOptions();
         });
-        userId = await currentUser.uid;
     } else {
         document.getElementById("accountOptions").classList.add("hidden");
         document.getElementById("signInOptions").classList.remove("hidden");
+        document.getElementById("signInNormally").addEventListener("click", () => {
+            document.getElementById("signindialog").showModal();
+        });
+        document.getElementById("signin").addEventListener("submit", (e) => {
+            e.preventDefault();
+            let user = document.getElementById("email").value;
+            let pass = document.getElementById("pswd").value;
+            signInWithEmail(user, pass);
+        });
     }
 }
 
@@ -146,6 +156,7 @@ async function accountOptions() {
         return;
     }
     if (await checkForUsernameMatch(userName)) {
+        console.log("duplicate username");
         return; 
     };
     const docRef = doc(database, "usernames", userId);
