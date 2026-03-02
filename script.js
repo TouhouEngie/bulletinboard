@@ -101,6 +101,8 @@ async function updateUsernameReference() {
 
 async function loadPosts() {
     const posts = await getDocs(collection(database, "posts"));
+    const usernameQuery = query(collection(database, "usernames"));
+    const usernameRef = await getDocs(usernameQuery);
     const board = document.getElementById("postboard");
     board.innerHTML = "";
     
@@ -127,11 +129,12 @@ async function loadPosts() {
         board.appendChild(newPost);
     }
     
-    // honestly just get the full package beforehand, fix soon
     async function getUsernameById(author) {
-        const usernameRef = doc(database, "usernames", author);
-        const usernames = await getDoc(usernameRef);
-        return usernames.data().username;
+        for (const doc of usernameRef.docs) {
+            if (doc.id === author) {
+                return doc.data().username;
+            }
+        }
     }
 }
 
